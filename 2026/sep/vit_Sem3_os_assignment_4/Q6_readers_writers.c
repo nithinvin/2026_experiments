@@ -81,20 +81,20 @@ int main()
     sem_init(&mutex, 0, 1);
     sem_init(&wrt, 0, 1);
 
-    // Create reader threads
-    for (int i = 0; i < n_readers; i++)
-    {
-        reader_id[i] = i + 1;
-        pthread_create(&readers[i], NULL, reader,
-                       &reader_id[i]);
-    }
-
     // Create writer threads
     for (int i = 0; i < n_writers; i++)
     {
         writer_id[i] = i + 1;
         pthread_create(&writers[i], NULL, writer,
                        &writer_id[i]);
+    }
+
+    // Create reader threads
+    for (int i = 0; i < n_readers; i++)
+    {
+        reader_id[i] = i + 1;
+        pthread_create(&readers[i], NULL, reader,
+                       &reader_id[i]);
     }
 
     // Wait for reader threads
