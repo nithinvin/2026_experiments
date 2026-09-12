@@ -4,24 +4,16 @@
 
 #define N 5
 
-int lock = 0;
+volatile int lock = 0;
 int shared_data = 0;
 
-/* Hardware synchronization construct: Test-and-Set */
-int TestAndSet(int *target)
-{
-    int old = *target;
-    *target = 1;
-    return old;
-}
-
-/* Function executed by each process */
+/* Process function */
 void *process(void *arg)
 {
     int id = *(int *)arg;
 
     /* Entry Section */
-    while (TestAndSet(&lock))
+    while (__sync_lock_test_and_set(&lock, 1))
     {
         /* Busy waiting */
     }
@@ -34,10 +26,10 @@ void *process(void *arg)
 
     sleep(1);
 
-    printf("Process %d leaving the critical section.\n", id);
+    printf("Process %d leaving the critical section.\n\n", id);
 
     /* Exit Section */
-    lock = 0;
+    __sync_lock_release(&lock);
 
     return NULL;
 }
@@ -50,20 +42,26 @@ int main()
     printf("Hardware Synchronization using Test-and-Set\n");
     printf("Number of processes: %d\n\n", N);
 
-    /* Create N processes (threads) */
+    /* Create N processes */
     for (int i = 0; i < N; i++)
     {
         process_id[i] = i + 1;
-        pthread_create(&threads[i], NULL, process, &process_id[i]);
+
+        if (pthread_create(&threads[i], NULL, process,
+                           &process_id[i]) != 0)
+        {
+            perror("pthread_create");
+            return 1;
+        }
     }
 
-    /* Wait for all processes to finish */
+    /* Wait for all processes */
     for (int i = 0; i < N; i++)
     {
         pthread_join(threads[i], NULL);
     }
 
-    printf("\nFinal value of shared data = %d\n", shared_data);
+    printf("Final value of shared data = %d\n", shared_data);
 
     return 0;
 }
