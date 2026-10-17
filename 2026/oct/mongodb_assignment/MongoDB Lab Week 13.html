@@ -1,0 +1,686 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>MongoDB Lab Week 13</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a lab answer sheet — sticky set navigator, then one card per question: ID chip, code with copy, expected output, a short "why". */
+:root {
+  --bg: #F5F7F5;
+  --surface: #FFFFFF;
+  --fg: #18211E;
+  --muted: #5A6763;
+  --line: #DCE3E0;
+  --accent: #0E6B61;
+  --accent-soft: #E2F0ED;
+  --amber: #8A5A00;
+  --amber-soft: #FBF1DC;
+  --code-bg: #EDF2F0;
+  --code-fg: #13201C;
+  --warn: #9B2C1F;
+  --warn-soft: #FBE7E3;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111715; --surface: #18201D; --fg: #E2EAE6; --muted: #98A6A1; --line: #2A3531;
+    --accent: #5CC4B5; --accent-soft: #17312C; --amber: #E3AE55; --amber-soft: #2E2615;
+    --code-bg: #0B100E; --code-fg: #D8E6E0; --warn: #F08F80; --warn-soft: #351A16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111715; --surface: #18201D; --fg: #E2EAE6; --muted: #98A6A1; --line: #2A3531;
+  --accent: #5CC4B5; --accent-soft: #17312C; --amber: #E3AE55; --amber-soft: #2E2615;
+  --code-bg: #0B100E; --code-fg: #D8E6E0; --warn: #F08F80; --warn-soft: #351A16;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 900px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { padding-block: 40px 24px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-size: clamp(28px, 5vw, 40px); line-height: 1.1; margin: 8px 0 12px; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 26px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--body); font-size: 16px; font-weight: 600; margin: 0; line-height: 1.4; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); font-size: 16px; }
+
+nav.sets { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+nav.sets .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: thin; }
+nav.sets a { flex: none; font-family: var(--mono); font-size: 13px; text-decoration: none; color: var(--fg); padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+nav.sets a:hover, nav.sets a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 20px; }
+.howto div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.howto b { display: block; font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 2px; }
+.tips { margin-top: 16px; padding: 14px 16px; background: var(--amber-soft); border-radius: 8px; display: grid; gap: 6px; }
+.tips p { max-width: none; }
+.tips strong { color: var(--amber); }
+
+section.set { padding-block: 36px 8px; scroll-margin-top: 64px; }
+.set-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; padding-bottom: 12px; border-bottom: 2px solid var(--fg); margin-bottom: 16px; }
+.set-head .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.set-intro { color: var(--muted); margin-bottom: 16px; }
+.btn { font: 600 12px var(--mono); color: var(--accent); background: transparent; border: 1px solid var(--accent); border-radius: 6px; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--accent-soft); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.done { background: var(--accent); color: var(--surface); }
+
+.qs { display: grid; gap: 14px; }
+article.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+article.q.setup { border-style: dashed; }
+.q-head { display: flex; gap: 12px; align-items: flex-start; }
+.chip { flex: none; font: 600 13px var(--mono); background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 5px; margin-top: 1px; }
+.setup .chip { background: var(--code-bg); color: var(--muted); }
+.code { position: relative; background: var(--code-bg); border-radius: 8px; min-width: 0; }
+.code .bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 0 12px; }
+.lang { font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+pre { margin: 0; padding: 8px 12px 12px; overflow-x: auto; font: 13px/1.55 var(--mono); color: var(--code-fg); tab-size: 2; }
+.out { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 14px; }
+.out dt { font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding-top: 3px; }
+.out dt.exp { color: var(--amber); }
+.out dt.why { color: var(--accent); }
+.out dt.warn { color: var(--warn); }
+.out dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.out code, p code, .tips code { font-family: var(--mono); font-size: 0.88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+details.reset { background: var(--warn-soft); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; }
+details.reset summary { cursor: pointer; font-weight: 600; color: var(--warn); }
+details.reset .code { margin-top: 10px; }
+footer { padding-block: 40px 56px; color: var(--muted); font-size: 13px; }
+@media (max-width: 520px) { .out { grid-template-columns: 1fr; } .out dt { padding-top: 6px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<nav class="sets" aria-label="Question sets"><div class="wrap" id="nav"></div></nav>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">BACSE202 · Database Systems · Week 13 · mongosh</div>
+    <h1>MongoDB Lab: answers for all five question sets</h1>
+    <p class="lede">Every question has its own block. Copy a block, paste it into <code>mongosh</code>, check the output against the expected result, then take a screenshot. The blocks are written to run in order from top to bottom.</p>
+    <div class="howto">
+      <div><b>1 · Start</b>In Ubuntu: <code>docker start mongo</code>, then <code>mongosh</code></div>
+      <div><b>2 · Paste</b>Click <em>Copy</em> on a block and right-click in the terminal to paste. Press Enter if needed.</div>
+      <div><b>3 · Screenshot</b>Type <code>cls</code> to clear the screen first, then paste. Take the screenshot with <code>Win + Shift + S</code>.</div>
+      <div><b>4 · Word doc</b>Paste the query into Word, put the screenshot under it, and use the question ID as the heading.</div>
+    </div>
+    <div class="tips">
+      <p><strong>Run each block once.</strong> Running <code>insertMany</code> again creates duplicate records, and running <code>$inc</code> again adds to the value again. If something goes wrong, use the red "Start this set again" box at the top of that set.</p>
+      <p><strong>Quotes:</strong> Word turns <code>"</code> into curly quotes. If you copy a query back out of Word, mongosh will reject it. Always copy from this page.</p>
+      <p><strong>Learn:</strong> each question has a short "Why" note. Read it before you run the block, then predict the output before you look at it.</p>
+    </div>
+  </header>
+  <main id="sets"></main>
+  <footer>Expected results assume the blocks were run once, in order, starting from an empty database. Your <code>_id</code> values (ObjectIds) will be different from anyone else's, which is normal.</footer>
+</div>
+
+<script>
+const SETS = [
+{
+  id: "setup", nav: "Setup", title: "Before the lab", meta: "Ubuntu terminal + mongosh",
+  intro: "Start the server, open the shell, and run the commands from section 0 of the handout. Take a screenshot of this as proof that your environment works.",
+  qs: [
+    { id: "S1", title: "Start MongoDB and open the shell", lang: "bash · Ubuntu", setup: true,
+      code: `docker start mongo
+docker exec -it mongo mongosh "mongodb://127.0.0.1:27017"`,
+      exp: "A prompt that reads <code>test&gt;</code>, after a few lines that include \"Connecting to: mongodb://127.0.0.1:27017\".",
+      why: "<code>mongod</code> is the server, running inside the container. <code>mongosh</code> is the client shell that connects to it on port 27017." },
+    { id: "S2", title: "Useful shell commands (section 0)", lang: "mongosh", setup: true,
+      code: `db.version()
+show dbs
+db`,
+      exp: "A version such as <code>8.0.x</code>. Then the databases <code>admin</code>, <code>config</code> and <code>local</code>. Then <code>test</code>, the current database.",
+      why: "<code>show dbs</code> lists only databases that hold data. A database you have switched to with <code>use</code> but never written to does not show up." }
+  ]
+},
+{
+  id: "set1", nav: "Set 1 · Beginner", title: "Question set 1: Beginner (CRUD)", meta: "libraryDB.books · B1–B8",
+  intro: "The library data is created here. Sets 2 and 4 use it as well, so run these blocks in order.",
+  reset: `use libraryDB
+db.books.drop()`,
+  qs: [
+    { id: "B1", title: "Create a database named libraryDB and a collection named books",
+      code: `use libraryDB
+db.createCollection("books")
+show collections`,
+      exp: "<code>switched to db libraryDB</code>, then <code>{ ok: 1 }</code>, then <code>books</code>.",
+      why: "<code>use</code> only switches to a database name. <code>createCollection</code> writes something, so libraryDB now exists and appears in <code>show dbs</code>." },
+    { id: "B2", title: "Insert at least five books (bookId, title, author, category, price, availableCopies)",
+      code: `db.books.insertMany([
+  { bookId: 1, title: "Database System Concepts", author: "Silberschatz", category: "Database", price: 850, availableCopies: 4 },
+  { bookId: 2, title: "Fundamentals of Database Systems", author: "Elmasri", category: "Database", price: 720, availableCopies: 3 },
+  { bookId: 3, title: "MongoDB: The Definitive Guide", author: "Chodorow", category: "Database", price: 480, availableCopies: 5 },
+  { bookId: 4, title: "Let Us C", author: "Kanetkar", category: "Programming", price: 350, availableCopies: 10 },
+  { bookId: 5, title: "Python Crash Course", author: "Matthes", category: "Programming", price: 620, availableCopies: 0 },
+  { bookId: 6, title: "Computer Networks", author: "Tanenbaum", category: "Networks", price: 780, availableCopies: 2 },
+  { bookId: 7, title: "Artificial Intelligence: A Modern Approach", author: "Russell and Norvig", category: "AI", price: 1250, availableCopies: 1 },
+  { bookId: 8, title: "Clean Code", author: "Robert Martin", category: "Programming", price: 540, availableCopies: 6 }
+])`,
+      exp: "<code>acknowledged: true</code> and an <code>insertedIds</code> list with 8 ObjectIds.",
+      why: "We insert 8 books so that later questions such as the price range, categories and sorting all return interesting results. MongoDB adds an <code>_id</code> to each document automatically." },
+    { id: "B3", title: "Display all books, then only title and price without _id",
+      code: `db.books.find()
+
+db.books.find({}, { _id: 0, title: 1, price: 1 })`,
+      exp: "First, all 8 full documents. Second, 8 lines such as <code>{ title: 'Database System Concepts', price: 850 }</code>.",
+      why: "The second argument is the <em>projection</em>. <code>1</code> includes a field and <code>0</code> excludes it. <code>_id</code> is always shown unless you exclude it explicitly." },
+    { id: "B4", title: "Find books in the category 'Database'",
+      code: `db.books.find({ category: "Database" })`,
+      exp: "3 books: bookId 1, 2 and 3.",
+      why: "<code>{ field: value }</code> is an equality match. It is the same as writing <code>{ category: { $eq: \"Database\" } }</code>." },
+    { id: "B5", title: "Books priced at least 500, sorted from highest to lowest price",
+      code: `db.books.find(
+  { price: { $gte: 500 } },
+  { _id: 0, title: 1, price: 1 }
+).sort({ price: -1 })`,
+      exp: "6 books in this order: 1250 (AI), 850, 780, 720, 620, 540.",
+      why: "<code>$gte</code> means \"greater than or equal\". In <code>sort()</code>, <code>-1</code> sorts in descending order and <code>1</code> in ascending order." },
+    { id: "B6", title: "Increase the price of one book by 50 using $inc",
+      code: `db.books.find({ bookId: 4 }, { _id: 0, title: 1, price: 1 })   // before
+
+db.books.updateOne({ bookId: 4 }, { $inc: { price: 50 } })
+
+db.books.find({ bookId: 4 }, { _id: 0, title: 1, price: 1 })   // after`,
+      exp: "Before: <code>price: 350</code>. Then <code>matchedCount: 1, modifiedCount: 1</code>. After: <code>price: 400</code>.",
+      why: "<code>$inc</code> adds to the current value. Running it twice would give 450, which is why the handout warns about repeating it.",
+      warn: "Run this only once." },
+    { id: "B7", title: "Change availableCopies to 0 for a selected book using $set",
+      code: `db.books.updateOne({ bookId: 6 }, { $set: { availableCopies: 0 } })
+
+db.books.find({ bookId: 6 }, { _id: 0, title: 1, availableCopies: 1 })`,
+      exp: "<code>modifiedCount: 1</code>, then <code>{ title: 'Computer Networks', availableCopies: 0 }</code>.",
+      why: "<code>$set</code> replaces the value of a single field and leaves the rest of the document as it was. Without <code>$set</code>, you would need <code>replaceOne</code> to change the document." },
+    { id: "B8", title: "Delete one book by bookId, after checking the matching record",
+      code: `db.books.find({ bookId: 8 })          // 1. check what will be deleted
+
+db.books.deleteOne({ bookId: 8 })     // 2. delete it
+
+db.books.countDocuments()             // 3. confirm`,
+      exp: "The Clean Code document, then <code>deletedCount: 1</code>, then <code>7</code>.",
+      why: "Run <code>find()</code> with exactly the same filter before you delete. If the filter is wrong, the find shows you before anything is lost." }
+  ]
+},
+{
+  id: "set2", nav: "Set 2 · Medium", title: "Question set 2: Medium (operators, nested data, arrays)", meta: "libraryDB.books · M1–M9",
+  intro: "This set continues with the 7 books left after Set 1. Price changes from B6 (Let Us C is now 400) and B7 (Computer Networks now has 0 copies) are already applied.",
+  qs: [
+    { id: "M1", title: "Books priced between 300 and 800 inclusive",
+      code: `use libraryDB
+
+db.books.find(
+  { price: { $gte: 300, $lte: 800 } },
+  { _id: 0, title: 1, price: 1 }
+)`,
+      exp: "5 books: 720, 480, 400, 620, 780 (bookIds 2, 3, 4, 5, 6).",
+      why: "Two operators on the same field are combined with AND. \"Inclusive\" means <code>$gte</code>/<code>$lte</code>. The exclusive versions are <code>$gt</code>/<code>$lt</code>." },
+    { id: "M2", title: "Books in either 'Database' or 'Programming' category",
+      code: `db.books.find(
+  { category: { $in: ["Database", "Programming"] } },
+  { _id: 0, title: 1, category: 1 }
+)
+
+// Same result using $or:
+db.books.find(
+  { $or: [{ category: "Database" }, { category: "Programming" }] },
+  { _id: 0, title: 1, category: 1 }
+)`,
+      exp: "5 books (bookIds 1–5), both times.",
+      why: "<code>$in</code> is the short way to write OR on <em>one</em> field. You need <code>$or</code> when the conditions are on <em>different</em> fields." },
+    { id: "M3", title: "Add publisher as an embedded document (name, city) to two books",
+      code: `db.books.updateOne(
+  { bookId: 1 },
+  { $set: { publisher: { name: "McGraw Hill Education", city: "Chennai" } } }
+)
+
+db.books.updateOne(
+  { bookId: 4 },
+  { $set: { publisher: { name: "BPB Publications", city: "New Delhi" } } }
+)
+
+db.books.find({ publisher: { $exists: true } }, { _id: 0, title: 1, publisher: 1 })`,
+      exp: "Two <code>modifiedCount: 1</code> results, then 2 books that each show a nested <code>publisher: { name, city }</code>.",
+      why: "A document can hold another document. Here MongoDB stores related data together, where SQL would use a separate table and a JOIN." },
+    { id: "M4", title: "Find books whose publisher.city is 'Chennai' (dot notation)",
+      code: `db.books.find({ "publisher.city": "Chennai" }, { _id: 0, title: 1, publisher: 1 })`,
+      exp: "1 book: Database System Concepts.",
+      why: "Dot notation reaches inside the embedded document. A field path with a dot must be written in quotes." },
+    { id: "M5", title: "Add a tags array to books, then find books tagged 'reference'",
+      code: `db.books.updateOne({ bookId: 1 }, { $set: { tags: ["reference", "textbook", "sql"] } })
+db.books.updateOne({ bookId: 2 }, { $set: { tags: ["textbook", "sql"] } })
+db.books.updateOne({ bookId: 3 }, { $set: { tags: ["nosql", "reference"] } })
+db.books.updateOne({ bookId: 4 }, { $set: { tags: ["beginner", "c"] } })
+db.books.updateOne({ bookId: 5 }, { $set: { tags: ["beginner", "python"] } })
+db.books.updateOne({ bookId: 6 }, { $set: { tags: ["reference", "networking"] } })
+db.books.updateOne({ bookId: 7 }, { $set: { tags: ["ai", "advanced"] } })
+
+db.books.find({ tags: "reference" }, { _id: 0, title: 1, tags: 1 })`,
+      exp: "7 update results, then 3 books: Database System Concepts, MongoDB: The Definitive Guide, Computer Networks.",
+      why: "When a field is an array, <code>{ tags: \"reference\" }</code> matches any document whose array <em>contains</em> that element. No loop is needed." },
+    { id: "M6", title: "$addToSet a tag (no duplicates), then $pull a tag",
+      code: `// a) "reference" is already there, so nothing changes:
+db.books.updateOne({ bookId: 3 }, { $addToSet: { tags: "reference" } })
+
+// b) "mongodb" is new, so it is added:
+db.books.updateOne({ bookId: 3 }, { $addToSet: { tags: "mongodb" } })
+
+// c) remove "nosql":
+db.books.updateOne({ bookId: 3 }, { $pull: { tags: "nosql" } })
+
+db.books.find({ bookId: 3 }, { _id: 0, title: 1, tags: 1 })`,
+      exp: "(a) <code>modifiedCount: 0</code>. (b) <code>modifiedCount: 1</code>. (c) <code>modifiedCount: 1</code>. Final tags: <code>['reference', 'mongodb']</code>.",
+      why: "Step (a) is the proof for the question: <code>$addToSet</code> refused to add a duplicate, so modifiedCount is 0. <code>$push</code> would have added it again." },
+    { id: "M7", title: "Number of books in each category using countDocuments",
+      code: `db.books.countDocuments({ category: "Database" })
+db.books.countDocuments({ category: "Programming" })
+db.books.countDocuments({ category: "Networks" })
+db.books.countDocuments({ category: "AI" })`,
+      exp: "<code>3</code>, <code>2</code>, <code>1</code>, <code>1</code>.",
+      why: "<code>countDocuments(filter)</code> counts the documents that match the filter. Set 3 shows how to get every category's count in one query with <code>$group</code>." },
+    { id: "M8", title: "List all categories using distinct()",
+      code: `db.books.distinct("category")`,
+      exp: "<code>[ 'AI', 'Database', 'Networks', 'Programming' ]</code>",
+      why: "<code>distinct</code> returns each unique value once. It works like SQL's <code>SELECT DISTINCT</code>." },
+    { id: "M9", title: "availableCopies > 0, sorted by price ascending, first three",
+      code: `db.books.find(
+  { availableCopies: { $gt: 0 } },
+  { _id: 0, title: 1, price: 1, availableCopies: 1 }
+).sort({ price: 1 }).limit(3)`,
+      exp: "Let Us C (400), MongoDB: The Definitive Guide (480), Fundamentals of Database Systems (720).",
+      why: "Python Crash Course and Computer Networks drop out because they have 0 copies. MongoDB always applies filter, then sort, then limit, whatever order you write them in." }
+  ]
+},
+{
+  id: "set3", nav: "Set 3 · Aggregation", title: "Question set 3: Advanced aggregation", meta: "shopDB.orders · A1–A8",
+  intro: "Load the orders from handout section 3.1 first (block A0). In a pipeline, each stage passes its output on to the next stage.",
+  reset: `use shopDB
+db.orders.drop()`,
+  qs: [
+    { id: "A0", title: "Setup: create shopDB.orders (from handout 3.1)", setup: true,
+      code: `use shopDB
+
+db.orders.insertMany([
+  { orderId: 1, customer: "Anu", city: "Chennai", status: "Delivered", total: 1200, items: [{ product: "Mouse", qty: 2, price: 400 }, { product: "Pad", qty: 1, price: 400 }] },
+  { orderId: 2, customer: "Bala", city: "Vellore", status: "Pending", total: 750, items: [{ product: "Keyboard", qty: 1, price: 750 }] },
+  { orderId: 3, customer: "Anu", city: "Chennai", status: "Delivered", total: 2200, items: [{ product: "Headset", qty: 2, price: 1100 }] },
+  { orderId: 4, customer: "Divya", city: "Coimbatore", status: "Cancelled", total: 500, items: [{ product: "Mouse", qty: 1, price: 500 }] },
+  { orderId: 5, customer: "Bala", city: "Vellore", status: "Delivered", total: 1500, items: [{ product: "Keyboard", qty: 1, price: 900 }, { product: "Pad", qty: 1, price: 600 }] }
+])`,
+      exp: "<code>acknowledged: true</code> with 5 insertedIds.",
+      why: "Each order has an <code>items</code> array of embedded documents. A5 and A6 need that structure for <code>$unwind</code>." },
+    { id: "A1", title: "Total revenue for Delivered orders only",
+      code: `db.orders.aggregate([
+  { $match: { status: "Delivered" } },
+  { $group: { _id: null, totalRevenue: { $sum: "$total" }, deliveredOrders: { $sum: 1 } } },
+  { $project: { _id: 0, totalRevenue: 1, deliveredOrders: 1 } }
+])`,
+      exp: "<code>{ totalRevenue: 4900, deliveredOrders: 3 }</code> (1200 + 2200 + 1500).",
+      why: "Put <code>$match</code> first so later stages process fewer documents. <code>_id: null</code> groups <em>all</em> remaining documents into one result." },
+    { id: "A2", title: "Order count and average order value for each customer",
+      code: `db.orders.aggregate([
+  { $group: {
+      _id: "$customer",
+      orderCount: { $sum: 1 },
+      averageOrderValue: { $avg: "$total" }
+  }},
+  { $sort: { _id: 1 } }
+])`,
+      exp: "Anu: 2 orders, avg 1700 · Bala: 2, avg 1125 · Divya: 1, avg 500.",
+      why: "<code>\"$customer\"</code> with a <code>$</code> means \"the value of the customer field\". <code>{ $sum: 1 }</code> adds 1 for each document, which counts them." },
+    { id: "A3", title: "City with the highest total order value",
+      code: `db.orders.aggregate([
+  { $group: { _id: "$city", totalValue: { $sum: "$total" } } },
+  { $sort: { totalValue: -1 } },
+  { $limit: 1 }
+])`,
+      exp: "<code>{ _id: 'Chennai', totalValue: 3400 }</code>",
+      why: "This is the usual top-N pattern: group, sort descending, limit. Remove <code>$limit</code> to see every city (Vellore 2250, Coimbatore 500)." },
+    { id: "A4", title: "Number of orders for each status",
+      code: `db.orders.aggregate([
+  { $group: { _id: "$status", numberOfOrders: { $sum: 1 } } },
+  { $sort: { numberOfOrders: -1 } }
+])`,
+      exp: "Delivered 3, then Pending 1 and Cancelled 1 (those two can appear in either order).",
+      why: "This is the MongoDB version of <code>SELECT status, COUNT(*) … GROUP BY status</code>." },
+    { id: "A5", title: "Unwind items and total quantity sold per product",
+      code: `db.orders.aggregate([
+  { $unwind: "$items" },
+  { $group: { _id: "$items.product", totalQty: { $sum: "$items.qty" } } },
+  { $sort: { totalQty: -1, _id: 1 } }
+])`,
+      exp: "Mouse 3, then Headset 2, Keyboard 2, Pad 2.",
+      why: "<code>$unwind</code> turns 1 order with 2 items into 2 documents, one per item. Our 5 orders become 7 documents before <code>$group</code> runs. To see this, run only the <code>$unwind</code> stage by itself." },
+    { id: "A6", title: "Product-wise sales value (qty × item price)",
+      code: `db.orders.aggregate([
+  { $unwind: "$items" },
+  { $group: {
+      _id: "$items.product",
+      salesValue: { $sum: { $multiply: ["$items.qty", "$items.price"] } }
+  }},
+  { $sort: { salesValue: -1 } }
+])`,
+      exp: "Headset 2200 · Keyboard 1650 · Mouse 1300 · Pad 1000.",
+      why: "<code>$multiply</code> works out qty × price for each item, and <code>$sum</code> then adds those values for each product. To count only real sales, add <code>{ $match: { status: \"Delivered\" } }</code> as the first stage." },
+    { id: "A7", title: "Customers whose total spending is at least 2000",
+      code: `db.orders.aggregate([
+  { $group: { _id: "$customer", totalSpent: { $sum: "$total" } } },
+  { $match: { totalSpent: { $gte: 2000 } } },
+  { $sort: { totalSpent: -1 } }
+])`,
+      exp: "Anu 3400, Bala 2250. Divya (500) is filtered out.",
+      why: "A <code>$match</code> placed <em>after</em> <code>$group</code> filters the groups. It does the job of SQL's <code>HAVING</code>." },
+    { id: "A8", title: "Customers with more than one order, sorted by order count descending",
+      code: `db.orders.aggregate([
+  { $group: { _id: "$customer", orderCount: { $sum: 1 } } },
+  { $match: { orderCount: { $gt: 1 } } },
+  { $sort: { orderCount: -1, _id: 1 } }
+])`,
+      exp: "Anu 2, Bala 2.",
+      why: "Same HAVING pattern as A7. The second sort key, <code>_id</code>, breaks the tie so the order is the same on every run." }
+  ]
+},
+{
+  id: "set4", nav: "Set 4 · Indexes", title: "Question set 4: Index practice", meta: "libraryDB.books · I1–I5",
+  intro: "Switch back to libraryDB. Block I0 is optional but recommended: it shows the query plan before any index exists, so you can compare it with the plan in I4.",
+  qs: [
+    { id: "I0", title: "Optional: query plan before indexing", setup: true,
+      code: `use libraryDB
+
+db.books.find({ category: "Database" }).explain("executionStats").queryPlanner.winningPlan`,
+      exp: "<code>stage: 'COLLSCAN'</code>",
+      why: "COLLSCAN means a collection scan: MongoDB had to read every document. Remember this and compare it with I4." },
+    { id: "I1", title: "Create an index on books.category",
+      code: `use libraryDB
+
+db.books.createIndex({ category: 1 })`,
+      exp: "<code>category_1</code>, which is the name MongoDB gives the new index.",
+      why: "<code>1</code> means ascending. The default name is the field name joined to its direction with <code>_</code>." },
+    { id: "I2", title: "Compound index: category ascending, price descending",
+      code: `db.books.createIndex({ category: 1, price: -1 })`,
+      exp: "<code>category_1_price_-1</code>",
+      why: "This index supports a query like \"books in Database, most expensive first\" without a separate sort step. Field order matters, because the index is ordered by category first." },
+    { id: "I3", title: "Display the indexes on the books collection",
+      code: `db.books.getIndexes()`,
+      exp: "3 indexes: <code>_id_</code>, <code>category_1</code>, <code>category_1_price_-1</code>.",
+      why: "Every collection has the <code>_id_</code> index automatically, and you cannot drop it." },
+    { id: "I4", title: "explain('executionStats') for a category filter",
+      code: `// Full output (scroll up through it for the screenshot):
+db.books.find({ category: "Database" }).explain("executionStats")
+
+// Short summary of the numbers the question asks for:
+var ex = db.books.find({ category: "Database" }).explain("executionStats");
+var wp = ex.queryPlanner.winningPlan.queryPlan ?? ex.queryPlanner.winningPlan;
+printjson({
+  stage: wp.stage,
+  inputStage: wp.inputStage?.stage,
+  indexUsed: wp.inputStage?.indexName,
+  nReturned: ex.executionStats.nReturned,
+  totalKeysExamined: ex.executionStats.totalKeysExamined,
+  totalDocsExamined: ex.executionStats.totalDocsExamined,
+  executionTimeMillis: ex.executionStats.executionTimeMillis
+})`,
+      exp: "<code>stage: 'FETCH'</code>, <code>inputStage: 'IXSCAN'</code>, index <code>category_1</code> or <code>category_1_price_-1</code>, <code>nReturned: 3</code>, <code>totalDocsExamined: 3</code>.",
+      why: "IXSCAN followed by FETCH means MongoDB looked up the matching keys in the index and then read only those 3 documents. Before indexing (I0), it read all 7. That difference is what an index is for. Write it down as your \"note\" for I4." },
+    { id: "I5", title: "Drop one index by name (not _id)",
+      code: `db.books.dropIndex("category_1")
+
+db.books.getIndexes()`,
+      exp: "<code>{ nIndexesWas: 3, ok: 1 }</code>, then only <code>_id_</code> and <code>category_1_price_-1</code> remain.",
+      why: "Use the index name from <code>getIndexes()</code>. The compound index still serves category queries, because category is its first field (the prefix rule)." }
+  ]
+},
+{
+  id: "set5", nav: "Set 5 · Capstone", title: "Question set 5: Capstone, Campus Bookstore (optional)", meta: "bookstoreDB · C1–C10",
+  intro: "This is a small bookstore app with three collections. It has 8 books, 5 customers and 10 sales. Books have an embedded publisher document and a tags array, and customers have an embedded address and an interests array.",
+  reset: `use bookstoreDB
+db.dropDatabase()`,
+  qs: [
+    { id: "C1", title: "Document design for books, customers and sales",
+      code: `// books:     { bookId, title, author, category, price, stock,
+//               publisher: { name, city },        <- embedded document
+//               tags: [ ... ] }                   <- array
+// customers: { customerId, name, email,
+//               address: { area, city, pincode }, <- embedded document
+//               interests: [ ... ] }              <- array
+// sales:     { saleId, customerId, bookId, title, qty, unitPrice,
+//               saleDate: ISODate, paymentMode }
+//
+// sales refers to customers and books by customerId / bookId.
+// title is copied into each sale so reports are readable without a join.
+
+use bookstoreDB`,
+      exp: "<code>switched to db bookstoreDB</code>",
+      why: "Embed data that is always read together, such as a publisher with its book. Reference data that is shared or grows, such as sales pointing to customers. This is the main schema decision in MongoDB." },
+    { id: "C2", title: "Insert sample data with insertMany()",
+      code: `db.books.insertMany([
+  { bookId: 1, title: "Database System Concepts", author: "Silberschatz", category: "Database", price: 850, stock: 12, publisher: { name: "McGraw Hill", city: "Chennai" }, tags: ["textbook", "sql"] },
+  { bookId: 2, title: "MongoDB: The Definitive Guide", author: "Chodorow", category: "Database", price: 480, stock: 8, publisher: { name: "O'Reilly", city: "Mumbai" }, tags: ["nosql", "reference"] },
+  { bookId: 3, title: "Let Us C", author: "Kanetkar", category: "Programming", price: 400, stock: 20, publisher: { name: "BPB", city: "New Delhi" }, tags: ["beginner", "c"] },
+  { bookId: 4, title: "Python Crash Course", author: "Matthes", category: "Programming", price: 620, stock: 10, publisher: { name: "No Starch", city: "Bengaluru" }, tags: ["beginner", "python"] },
+  { bookId: 5, title: "Clean Code", author: "Robert Martin", category: "Programming", price: 540, stock: 6, publisher: { name: "Pearson", city: "Chennai" }, tags: ["practices"] },
+  { bookId: 6, title: "Computer Networks", author: "Tanenbaum", category: "Networks", price: 780, stock: 5, publisher: { name: "Pearson", city: "Chennai" }, tags: ["textbook", "networking"] },
+  { bookId: 7, title: "Operating System Concepts", author: "Silberschatz", category: "OS", price: 900, stock: 7, publisher: { name: "Wiley", city: "New Delhi" }, tags: ["textbook", "os"] },
+  { bookId: 8, title: "Discrete Mathematics", author: "Rosen", category: "Mathematics", price: 350, stock: 15, publisher: { name: "McGraw Hill", city: "Chennai" }, tags: ["maths"] }
+])
+
+db.customers.insertMany([
+  { customerId: 1, name: "Anu", email: "anu@example.com", address: { area: "Kelambakkam", city: "Chennai", pincode: 603103 }, interests: ["Database", "Programming"] },
+  { customerId: 2, name: "Bala", email: "bala@example.com", address: { area: "Katpadi", city: "Vellore", pincode: 632007 }, interests: ["Programming", "OS"] },
+  { customerId: 3, name: "Charan", email: "charan@example.com", address: { area: "Tambaram", city: "Chennai", pincode: 600045 }, interests: ["Networks", "Database"] },
+  { customerId: 4, name: "Divya", email: "divya@example.com", address: { area: "Gandhipuram", city: "Coimbatore", pincode: 641012 }, interests: ["Mathematics"] },
+  { customerId: 5, name: "Ezhil", email: "ezhil@example.com", address: { area: "Velachery", city: "Chennai", pincode: 600042 }, interests: ["AI"] }
+])
+
+db.sales.insertMany([
+  { saleId: 1,  customerId: 1, bookId: 2, title: "MongoDB: The Definitive Guide", qty: 1, unitPrice: 480, saleDate: ISODate("2026-10-12T10:15:00Z"), paymentMode: "UPI" },
+  { saleId: 2,  customerId: 2, bookId: 3, title: "Let Us C", qty: 2, unitPrice: 400, saleDate: ISODate("2026-10-12T11:40:00Z"), paymentMode: "Cash" },
+  { saleId: 3,  customerId: 3, bookId: 1, title: "Database System Concepts", qty: 1, unitPrice: 850, saleDate: ISODate("2026-10-12T14:05:00Z"), paymentMode: "Card" },
+  { saleId: 4,  customerId: 1, bookId: 4, title: "Python Crash Course", qty: 1, unitPrice: 620, saleDate: ISODate("2026-10-13T09:30:00Z"), paymentMode: "UPI" },
+  { saleId: 5,  customerId: 4, bookId: 3, title: "Let Us C", qty: 1, unitPrice: 400, saleDate: ISODate("2026-10-13T10:50:00Z"), paymentMode: "UPI" },
+  { saleId: 6,  customerId: 3, bookId: 6, title: "Computer Networks", qty: 1, unitPrice: 780, saleDate: ISODate("2026-10-13T12:20:00Z"), paymentMode: "Card" },
+  { saleId: 7,  customerId: 2, bookId: 5, title: "Clean Code", qty: 2, unitPrice: 540, saleDate: ISODate("2026-10-13T15:45:00Z"), paymentMode: "Cash" },
+  { saleId: 8,  customerId: 1, bookId: 1, title: "Database System Concepts", qty: 1, unitPrice: 850, saleDate: ISODate("2026-10-14T09:10:00Z"), paymentMode: "UPI" },
+  { saleId: 9,  customerId: 4, bookId: 8, title: "Discrete Mathematics", qty: 3, unitPrice: 350, saleDate: ISODate("2026-10-14T11:00:00Z"), paymentMode: "Card" },
+  { saleId: 10, customerId: 3, bookId: 2, title: "MongoDB: The Definitive Guide", qty: 2, unitPrice: 480, saleDate: ISODate("2026-10-14T13:35:00Z"), paymentMode: "UPI" }
+])
+
+show collections`,
+      exp: "Three insert results with 8, 5 and 10 insertedIds, then <code>books</code>, <code>customers</code>, <code>sales</code>.",
+      why: "<code>ISODate(...)</code> stores a real date type rather than text. That lets C6 group sales by day. Ezhil (customer 5) has no sales on purpose, which C5 needs." },
+    { id: "C3", title: "Available books under a given price, sorted by price",
+      code: `var maxPrice = 600;
+
+db.books.find(
+  { price: { $lt: maxPrice }, stock: { $gt: 0 } },
+  { _id: 0, title: 1, price: 1, stock: 1 }
+).sort({ price: 1 })`,
+      exp: "Discrete Mathematics 350 · Let Us C 400 · MongoDB: The Definitive Guide 480 · Clean Code 540.",
+      why: "mongosh is a JavaScript shell, so you can use variables. Change <code>maxPrice</code> and run the query again to try a different \"given price\"." },
+    { id: "C4", title: "Record a sale and update stock safely using a specific bookId filter",
+      code: `// 1. Check the exact book first
+db.books.find({ bookId: 7 }, { _id: 0, title: 1, stock: 1 })
+
+// 2. Record the new sale (Bala buys 1 copy of OS Concepts)
+db.sales.insertOne({ saleId: 11, customerId: 2, bookId: 7, title: "Operating System Concepts", qty: 1, unitPrice: 900, saleDate: ISODate("2026-10-14T16:20:00Z"), paymentMode: "UPI" })
+
+// 3. Reduce stock: only bookId 7, and only if enough stock exists
+db.books.updateOne(
+  { bookId: 7, stock: { $gte: 1 } },
+  { $inc: { stock: -1 } }
+)
+
+// 4. Confirm
+db.books.find({ bookId: 7 }, { _id: 0, title: 1, stock: 1 })`,
+      exp: "Stock 7, then the sale is inserted, then <code>matchedCount: 1, modifiedCount: 1</code>, then stock 6.",
+      why: "Two safeguards. <code>updateOne</code> with a unique <code>bookId</code> can never touch a different book. The <code>stock: { $gte: 1 }</code> condition means the update matches nothing (matchedCount 0) when the book is out of stock, so stock can never go negative.",
+      warn: "Run this only once. It inserts a sale and reduces stock." },
+    { id: "C5", title: "Customers from a selected city who have made a purchase",
+      code: `var city = "Chennai";
+var buyerIds = db.sales.distinct("customerId");
+
+db.customers.find(
+  { "address.city": city, customerId: { $in: buyerIds } },
+  { _id: 0, customerId: 1, name: 1, "address.city": 1 }
+)
+
+// Alternative, in a single query using $lookup (a join):
+db.customers.aggregate([
+  { $match: { "address.city": city } },
+  { $lookup: { from: "sales", localField: "customerId", foreignField: "customerId", as: "purchases" } },
+  { $match: { "purchases.0": { $exists: true } } },
+  { $project: { _id: 0, name: 1, city: "$address.city", purchaseCount: { $size: "$purchases" } } }
+])`,
+      exp: "Anu and Charan. Ezhil lives in Chennai but has no purchases, so she is left out. The second query adds purchaseCount: Anu 3, Charan 3.",
+      why: "The first method takes two steps: get the buyer IDs, then filter customers. <code>$lookup</code> does it in one pipeline, joining customers to sales. <code>\"purchases.0\"</code> exists only if the array has at least one element." },
+    { id: "C6", title: "Revenue by day and by product (aggregation)",
+      code: `// Revenue by day
+db.sales.aggregate([
+  { $group: {
+      _id: { $dateToString: { format: "%Y-%m-%d", date: "$saleDate" } },
+      revenue: { $sum: { $multiply: ["$qty", "$unitPrice"] } },
+      numberOfSales: { $sum: 1 }
+  }},
+  { $sort: { _id: 1 } }
+])
+
+// Revenue by product
+db.sales.aggregate([
+  { $group: { _id: "$title", revenue: { $sum: { $multiply: ["$qty", "$unitPrice"] } } } },
+  { $sort: { revenue: -1 } }
+])`,
+      exp: "By day: 2026-10-12 → 2130 (3 sales), 2026-10-13 → 2880 (4), 2026-10-14 → 3760 (4). By product: DB System Concepts 1700 at the top and Python Crash Course 620 at the bottom.",
+      why: "<code>$dateToString</code> turns each timestamp into a date string such as <code>2026-10-12</code>, so all sales from the same day fall into one group." },
+    { id: "C7", title: "Top three products by sales value",
+      code: `db.sales.aggregate([
+  { $group: {
+      _id: { bookId: "$bookId", title: "$title" },
+      salesValue: { $sum: { $multiply: ["$qty", "$unitPrice"] } },
+      unitsSold: { $sum: "$qty" }
+  }},
+  { $sort: { salesValue: -1 } },
+  { $limit: 3 }
+])`,
+      exp: "Database System Concepts 1700 (2 units) · MongoDB: The Definitive Guide 1440 (3) · Let Us C 1200 (3).",
+      why: "You can group on several fields at once by making <code>_id</code> a document. Let Us C sells as many units as the MongoDB book but ranks lower because it is cheaper." },
+    { id: "C8", title: "Index for a frequent query + explain('executionStats')",
+      code: `// Frequent query: "show this customer's purchase history"
+db.sales.createIndex({ customerId: 1 })
+
+db.sales.find({ customerId: 3 }).explain("executionStats")
+
+// Short summary:
+var ex8 = db.sales.find({ customerId: 3 }).explain("executionStats");
+var wp8 = ex8.queryPlanner.winningPlan.queryPlan ?? ex8.queryPlanner.winningPlan;
+printjson({
+  stage: wp8.stage,
+  inputStage: wp8.inputStage?.stage,
+  indexUsed: wp8.inputStage?.indexName,
+  nReturned: ex8.executionStats.nReturned,
+  totalDocsExamined: ex8.executionStats.totalDocsExamined
+})`,
+      exp: "<code>customerId_1</code>, then FETCH over IXSCAN on <code>customerId_1</code>, <code>nReturned: 3</code>, <code>totalDocsExamined: 3</code> out of 11 sales.",
+      why: "Without the index, MongoDB would read all 11 sales (COLLSCAN). With it, MongoDB reads only Charan's 3. Sales is the collection that grows fastest, so this is where an index pays off most." },
+    { id: "C9", title: "updateOne, updateMany, deleteOne, deleteMany on test data",
+      code: `// Test documents, marked with test: true so the real data is never touched
+db.books.insertMany([
+  { bookId: 901, title: "Test Book A", price: 100, stock: 1, test: true },
+  { bookId: 902, title: "Test Book B", price: 200, stock: 1, test: true },
+  { bookId: 903, title: "Test Book C", price: 300, stock: 1, test: true }
+])
+
+db.books.updateOne({ bookId: 901 }, { $set: { price: 150 } })      // updateOne
+db.books.updateMany({ test: true }, { $inc: { stock: 5 } })        // updateMany
+db.books.find({ test: true }, { _id: 0, bookId: 1, price: 1, stock: 1 })
+
+db.books.deleteOne({ bookId: 901 })                                // deleteOne
+db.books.deleteMany({ test: true })                                // deleteMany
+
+db.books.countDocuments({ test: true })   // test data gone
+db.books.countDocuments()                 // real books untouched`,
+      exp: "updateOne: modifiedCount 1 · updateMany: modifiedCount 3 · find shows 901 at price 150 and every stock at 6 · deleteOne: deletedCount 1 · deleteMany: deletedCount 2 · then <code>0</code> and <code>8</code>.",
+      why: "The <code>test: true</code> marker is the safety net: <code>updateMany</code> and <code>deleteMany</code> can only reach the test documents. Real projects use the same habit." },
+    { id: "C10", title: "Terminal transcript (commands + output) and explanation",
+      lang: "bash · Ubuntu",
+      code: `# In Ubuntu (not inside mongosh). 'script' records everything shown on screen into a file.
+script -q ~/mongolab/capstone_transcript.txt
+
+# Now open mongosh and paste C2 to C9 one at a time
+docker exec -it mongo mongosh
+
+# When done: type  exit  (leaves mongosh), then  exit  again (stops recording)
+
+# Open the transcript from Windows Explorer:
+#   \\\\wsl$\\Ubuntu-24.04\\home\\<your-username>\\mongolab\\capstone_transcript.txt`,
+      exp: "A text file with every command and output from the session, ready to attach.",
+      why: "To start again from scratch first, use the red reset box at the top of this set, then run C1 to C9. For the explanation, write 1 to 2 lines per task in your own words, using the \"Expected\" and \"Why\" notes as a guide. For example: \"C7: Database System Concepts is the top seller by value (₹1700) even though Let Us C sold as many units, because it costs more than twice as much.\"" }
+  ]
+}
+];
+
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+async function copyText(text, btn) {
+  const label = btn.textContent;
+  const ok = () => { btn.textContent = "Copied"; btn.classList.add("done"); setTimeout(() => { btn.textContent = label; btn.classList.remove("done"); }, 1400); };
+  try { await navigator.clipboard.writeText(text); ok(); }
+  catch (e) {
+    const pre = btn.closest(".code")?.querySelector("pre");
+    if (pre) { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Press Ctrl+C"; setTimeout(() => { btn.textContent = label; }, 2000); }
+  }
+}
+
+function codeBlock(code, lang) {
+  const box = el("div", "code");
+  const bar = el("div", "bar");
+  bar.append(el("span", "lang", lang || "mongosh"));
+  const btn = el("button", "btn", "Copy"); btn.type = "button";
+  const pre = el("pre"); pre.textContent = code;
+  btn.addEventListener("click", () => copyText(code, btn));
+  bar.append(btn); box.append(bar, pre);
+  return box;
+}
+
+const nav = document.getElementById("nav");
+const main = document.getElementById("sets");
+SETS.forEach(set => {
+  const a = el("a", null, set.nav); a.href = "#" + set.id; nav.append(a);
+  const sec = el("section", "set"); sec.id = set.id;
+  const head = el("div", "set-head");
+  const left = el("div"); left.append(el("h2", null, set.title)); left.append(el("div", "meta", set.meta));
+  head.append(left);
+  const all = set.qs.map(q => `// ===== ${q.id}. ${q.title} =====\n${q.code}`).join("\n\n");
+  const allBtn = el("button", "btn", "Copy whole set"); allBtn.type = "button";
+  allBtn.addEventListener("click", () => copyText(all, allBtn));
+  head.append(allBtn);
+  sec.append(head);
+  if (set.intro) sec.append(el("p", "set-intro", set.intro));
+  if (set.reset) {
+    const d = el("details", "reset");
+    d.append(el("summary", null, "Start this set again (deletes this set's data)"));
+    d.append(el("p", null, "Use this only if you made a mistake. Run it, then run this set's blocks again from the first one."));
+    d.append(codeBlock(set.reset, "mongosh"));
+    sec.append(d);
+  }
+  const qs = el("div", "qs");
+  set.qs.forEach(q => {
+    const art = el("article", "q" + (q.setup ? " setup" : "")); art.id = q.id;
+    const h = el("div", "q-head"); h.append(el("span", "chip", q.id)); h.append(el("h3", null, q.title));
+    art.append(h, codeBlock(q.code, q.lang));
+    const dl = el("dl", "out");
+    if (q.warn) { dl.append(el("dt", "warn", "Careful")); dl.append(el("dd", null, q.warn)); }
+    dl.append(el("dt", "exp", "Expected")); dl.append(el("dd", null, q.exp));
+    dl.append(el("dt", "why", "Why")); dl.append(el("dd", null, q.why));
+    art.append(dl);
+    qs.append(art);
+  });
+  sec.append(qs);
+  main.append(sec);
+});
+</script>
+
+</body></html>
