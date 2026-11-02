@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 370" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="Round timeline. Without a plant: buy phase then 100 seconds of action. With a plant: buy phase, 40 seconds of action, 4 second plant, then a 45 second Spike countdown">
+  <rect width="900" height="370" fill="#f6f4ee"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">What happens in one round</text>
+
+  <text x="40" y="78" font-size="17" font-weight="700" fill="#222">If nobody plants the Spike</text>
+  <rect x="40" y="90" width="189" height="62" fill="#c9d6e8" stroke="#55606b"/>
+  <rect x="229" y="90" width="631" height="62" fill="#efc4c0" stroke="#55606b"/>
+  <text x="134" y="116" text-anchor="middle" font-size="16" font-weight="700" fill="#222">Buy phase</text>
+  <text x="134" y="137" text-anchor="middle" font-size="14" fill="#222">about 30 s</text>
+  <text x="544" y="116" text-anchor="middle" font-size="16" font-weight="700" fill="#222">Action phase</text>
+  <text x="544" y="137" text-anchor="middle" font-size="14" fill="#222">up to 100 s</text>
+  <text x="860" y="176" text-anchor="end" font-size="15" font-weight="700" fill="#0f7f73">Clock hits zero: defenders win</text>
+
+  <text x="40" y="218" font-size="17" font-weight="700" fill="#222">If the Spike is planted (example: 40 s into the action)</text>
+  <rect x="40" y="230" width="189" height="62" fill="#c9d6e8" stroke="#55606b"/>
+  <rect x="229" y="230" width="252" height="62" fill="#efc4c0" stroke="#55606b"/>
+  <rect x="481" y="230" width="25" height="62" fill="#b9791b" stroke="#55606b"/>
+  <rect x="506" y="230" width="284" height="62" fill="#f6d9a8" stroke="#55606b"/>
+  <text x="134" y="256" text-anchor="middle" font-size="16" font-weight="700" fill="#222">Buy phase</text>
+  <text x="134" y="277" text-anchor="middle" font-size="14" fill="#222">about 30 s</text>
+  <text x="355" y="256" text-anchor="middle" font-size="16" font-weight="700" fill="#222">Action phase</text>
+  <text x="355" y="277" text-anchor="middle" font-size="14" fill="#222">40 s</text>
+  <text x="648" y="256" text-anchor="middle" font-size="16" font-weight="700" fill="#222">Spike countdown</text>
+  <text x="648" y="277" text-anchor="middle" font-size="14" fill="#222">45 s, the old clock is gone</text>
+  <line x1="493" y1="292" x2="493" y2="312" stroke="#7d4f0d" stroke-width="2"/>
+  <text x="493" y="330" text-anchor="middle" font-size="14" font-weight="700" fill="#7d4f0d">Plant, 4 s</text>
+  <text x="790" y="330" text-anchor="end" font-size="15" font-weight="700" fill="#222">Then: defused or boom</text>
+  <text x="450" y="358" text-anchor="middle" font-size="13" fill="#555">The round can also end early if one team is eliminated. Bars are roughly to scale.</text>
+</svg>

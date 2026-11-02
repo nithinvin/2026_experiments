@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="Made-up top-down map with defender spawn at the top, attacker spawn at the bottom, site A on the left, site B on the right and mid in the center">
+  <defs>
+    <marker id="atk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c8323a"/></marker>
+    <marker id="def" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0f7f73"/></marker>
+  </defs>
+  <rect width="900" height="600" fill="#f6f4ee"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">A simple, made-up map (seen from above)</text>
+
+  <!-- walkable floors -->
+  <g fill="#ffffff" stroke="#55606b" stroke-width="3">
+    <rect x="330" y="55" width="240" height="85" rx="10"/>
+    <rect x="330" y="470" width="240" height="85" rx="10"/>
+    <rect x="395" y="140" width="110" height="330"/>
+    <rect x="60" y="195" width="240" height="210" rx="10"/>
+    <rect x="600" y="195" width="240" height="210" rx="10"/>
+  </g>
+  <!-- corridors -->
+  <g fill="#ffffff" stroke="none">
+    <rect x="150" y="95" width="180" height="50"/>
+    <rect x="150" y="145" width="60" height="50"/>
+    <rect x="570" y="95" width="180" height="50"/>
+    <rect x="690" y="145" width="60" height="50"/>
+    <rect x="150" y="405" width="60" height="110"/>
+    <rect x="150" y="490" width="180" height="50"/>
+    <rect x="690" y="405" width="60" height="110"/>
+    <rect x="570" y="490" width="180" height="50"/>
+    <rect x="300" y="280" width="95" height="50"/>
+    <rect x="505" y="280" width="95" height="50"/>
+  </g>
+  <g fill="none" stroke="#55606b" stroke-width="3">
+    <path d="M330 95H150V195M210 195V145H330"/>
+    <path d="M570 95H750V195M690 195V145H570"/>
+    <path d="M150 405V540H330M210 405V490H330"/>
+    <path d="M750 405V540H570M690 405V490H570"/>
+    <path d="M300 280H395M300 330H395"/>
+    <path d="M505 280H600M505 330H600"/>
+  </g>
+  <!-- cover over the room borders at corridor mouths -->
+  <g stroke="#ffffff" stroke-width="4">
+    <path d="M152 195H208M152 405H208M692 195H748M692 405H748"/>
+    <path d="M330 97V143M330 492V538M570 97V143M570 492V538"/>
+    <path d="M300 282V328M395 282V328M505 282V328M600 282V328"/>
+    <path d="M397 140H503M397 470H503"/>
+  </g>
+
+  <!-- plant zones -->
+  <rect x="100" y="240" width="160" height="120" rx="8" fill="#f6d9a8" stroke="#b9791b" stroke-width="2" stroke-dasharray="7 5"/>
+  <rect x="640" y="240" width="160" height="120" rx="8" fill="#f6d9a8" stroke="#b9791b" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="180" y="295" text-anchor="middle" font-size="40" font-weight="700" fill="#7d4f0d">A</text>
+  <text x="180" y="325" text-anchor="middle" font-size="15" fill="#5c3a09">Site A plant zone</text>
+  <text x="720" y="295" text-anchor="middle" font-size="40" font-weight="700" fill="#7d4f0d">B</text>
+  <text x="720" y="325" text-anchor="middle" font-size="15" fill="#5c3a09">Site B plant zone</text>
+
+  <!-- labels -->
+  <text x="450" y="92" text-anchor="middle" font-size="19" font-weight="700" fill="#0f7f73">Defender spawn</text>
+  <text x="450" y="116" text-anchor="middle" font-size="14" fill="#333">Guards start here</text>
+  <text x="450" y="507" text-anchor="middle" font-size="19" font-weight="700" fill="#c8323a">Attacker spawn</text>
+  <text x="450" y="531" text-anchor="middle" font-size="14" fill="#333">Spike starts here</text>
+  <text x="450" y="300" text-anchor="middle" font-size="19" font-weight="700" fill="#333">Mid</text>
+  <text x="450" y="322" text-anchor="middle" font-size="13" fill="#333">connects</text>
+  <text x="450" y="338" text-anchor="middle" font-size="13" fill="#333">everything</text>
+
+  <!-- attacker routes -->
+  <g fill="none" stroke="#c8323a" stroke-width="4" stroke-dasharray="10 7">
+    <path d="M325 516H180V425" marker-end="url(#atk)"/>
+    <path d="M575 516H720V425" marker-end="url(#atk)"/>
+    <path d="M450 465V360" marker-end="url(#atk)"/>
+  </g>
+  <!-- defender routes -->
+  <g fill="none" stroke="#0f7f73" stroke-width="4">
+    <path d="M325 120H180V215" marker-end="url(#def)"/>
+    <path d="M575 120H720V215" marker-end="url(#def)"/>
+  </g>
+  <!-- choke marker -->
+  <circle cx="180" cy="405" r="16" fill="none" stroke="#6b3fa0" stroke-width="3"/>
+  <circle cx="720" cy="405" r="16" fill="none" stroke="#6b3fa0" stroke-width="3"/>
+
+  <!-- legend -->
+  <g font-size="14" fill="#222">
+    <line x1="60" y1="577" x2="105" y2="577" stroke="#c8323a" stroke-width="4" stroke-dasharray="10 7"/>
+    <text x="113" y="582">Attacker routes</text>
+    <line x1="255" y1="577" x2="300" y2="577" stroke="#0f7f73" stroke-width="4"/>
+    <text x="308" y="582">Defender routes</text>
+    <circle cx="470" cy="577" r="10" fill="none" stroke="#6b3fa0" stroke-width="3"/>
+    <text x="488" y="582">Choke point</text>
+    <rect x="605" y="567" width="28" height="20" fill="#f6d9a8" stroke="#b9791b" stroke-dasharray="4 3"/>
+    <text x="641" y="582">Where the Spike can go</text>
+  </g>
+</svg>

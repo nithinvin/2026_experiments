@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valorant, in Plain English: Visual Guide</title>
+<style>
+  :root { --ink:#222; --muted:#555; --bg:#f6f4ee; --card:#fff; --line:#cfcabc; --atk:#c8323a; --def:#0f7f73; --spike:#b9791b; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:17px/1.55 Arial, Helvetica, sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:880px; margin:0 auto; padding:24px 16px 56px; }
+  h1 { font-size:34px; line-height:1.15; margin:8px 0; }
+  h2 { font-size:24px; margin:0 0 8px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin-top:20px; }
+  img { width:100%; height:auto; display:block; border-radius:8px; }
+  button { font:inherit; padding:9px 14px; border:1px solid #55606b; border-radius:8px; background:#fff; color:var(--ink); cursor:pointer; }
+  button:hover:not(:disabled) { background:#eee9dc; }
+  button:disabled { opacity:.45; cursor:default; }
+  button[aria-pressed="true"], button[aria-pressed="true"]:hover:not(:disabled) { background:var(--ink); color:#fff; }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--spike); outline-offset:2px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:12px 0; }
+  .muted { color:var(--muted); font-size:15px; }
+  .step-title { font-weight:700; font-size:19px; margin:12px 0 4px; }
+  .who { font-weight:700; }
+  .progress { height:8px; border-radius:4px; background:#e6e1d4; overflow:hidden; margin-top:12px; }
+  .progress div { height:100%; background:var(--spike); transition:width .2s; }
+  input[type=range] { width:100%; accent-color:var(--spike); }
+  .verdict { padding:12px 14px; border-radius:8px; font-weight:700; margin-top:10px; }
+  .yes { background:#bfe3c6; color:#1d4d27; }
+  .tight { background:#f6d9a8; color:#5c3a09; }
+  .no { background:#efb1ac; color:#6c1a1e; }
+  .result { border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-top:10px; }
+  .result strong { display:block; font-size:18px; }
+  label { display:block; font-weight:700; }
+  nav a { color:var(--def); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Valorant, in Plain English</h1>
+  <p>Two teams of 5. One tries to plant a bomb, called the <strong>Spike</strong>. The other tries to stop them. Think of burglars and guards. Read the <a href="README.md">full guide</a> for more detail.</p>
+
+  <section aria-labelledby="walk-h">
+    <h2 id="walk-h">Walk through one round</h2>
+    <p class="muted">Press Next to follow a round from the shop to the end.</p>
+    <img src="images/map_layout.svg" alt="A made-up map with defenders at the top, attackers at the bottom, site A on the left and site B on the right">
+    <div class="progress" aria-hidden="true"><div id="walk-bar"></div></div>
+    <p class="step-title" id="walk-title"></p>
+    <p id="walk-text" aria-live="polite"></p>
+    <div class="row">
+      <button id="walk-prev" type="button">Back</button>
+      <button id="walk-next" type="button">Next</button>
+      <span class="muted" id="walk-count"></span>
+    </div>
+  </section>
+
+  <section aria-labelledby="def-h">
+    <h2 id="def-h">Can I still defuse?</h2>
+    <p>A defuse takes 7 seconds. Progress is saved at the halfway point, 3.5 seconds.</p>
+    <label for="def-time">Time left on the Spike: <span id="def-time-val"></span> seconds</label>
+    <input id="def-time" type="range" min="0" max="45" step="0.5" value="12">
+    <div class="row">
+      <button id="def-half" type="button" aria-pressed="false">Half defuse saved: no</button>
+    </div>
+    <div id="def-verdict" class="verdict" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="mode-h">
+    <h2 id="mode-h">Which mode should I play?</h2>
+    <p>What are you in the mood for?</p>
+    <div class="row" id="mode-buttons"></div>
+    <div id="mode-results" aria-live="polite"></div>
+    <p class="muted">Riot changes modes over time, so check your game's queue list.</p>
+  </section>
+
+  <section aria-labelledby="pic-h">
+    <h2 id="pic-h">The rest, in pictures</h2>
+    <img src="images/match_structure.svg" alt="Twelve rounds on one side, a side swap, then up to twelve on the other">
+    <br>
+    <img src="images/roles.svg" alt="The four roles: Duelist, Initiator, Controller, Sentinel">
+    <br>
+    <img src="images/wallet_example.svg" alt="One player's credits across three rounds">
+  </section>
+
+  <p class="muted">Unofficial guide with original simplified pictures. Valorant is a trademark of Riot Games. Checked November 2026; see the <a href="07_cheat_sheet.md#sources">sources and confidence notes</a>.</p>
+</main>
+
+<script>
+(function () {
+  var steps = [
+    ["Buy phase", "Everyone waits behind a barrier and shops. Your team buys rifles and armor, and one attacker carries the Spike."],
+    ["The barriers drop", "You have up to 100 seconds. Attackers move out from the bottom of the map, while defenders are already spreading out to guard A and B."],
+    ["Gather information", "A scout's ability shows two defenders near A. Your team quietly decides to attack B instead."],
+    ["The fake", "One attacker makes noise at A. A defender at B hears it and leaves to help, which is exactly what you wanted."],
+    ["The execute", "A smoke blocks the guard's view of the B doorway, a flash goes in, and four attackers rush through together."],
+    ["The plant", "With the site clear, your carrier stands in the plant zone and holds the key for 4 seconds. The team earns its plant bonus, and a 45-second countdown begins."],
+    ["The post-plant", "Your team spreads out and aims at the Spike from hiding spots. Defenders can't shoot while defusing, so they must come to you."],
+    ["The retake", "Defenders return together. A defuse takes 7 seconds, saved at 3.5, and the first one to try is shot before reaching the save point."],
+    ["Boom!", "The Spike explodes. Attackers win the round and each gets 3,000 credits, while the losers get less. Everyone returns for the next round."]
+  ];
+  var i = 0;
+  var el = function (id) { return document.getElementById(id); };
+  function drawStep() {
+    el("walk-title").textContent = steps[i][0];
+    el("walk-text").textContent = steps[i][1];
+    el("walk-count").textContent = "Step " + (i + 1) + " of " + steps.length;
+    el("walk-bar").style.width = ((i + 1) / steps.length * 100) + "%";
+    el("walk-prev").disabled = i === 0;
+    el("walk-next").disabled = i === steps.length - 1;
+  }
+  el("walk-prev").addEventListener("click", function () { if (i > 0) { i--; drawStep(); } });
+  el("walk-next").addEventListener("click", function () { if (i < steps.length - 1) { i++; drawStep(); } });
+  drawStep();
+
+  var half = false;
+  function drawDefuse() {
+    var t = parseFloat(el("def-time").value);
+    var need = half ? 3.5 : 7;
+    var box = el("def-verdict");
+    el("def-time-val").textContent = t.toFixed(1);
+    var spare = t - need;
+    if (spare < 0) {
+      box.className = "verdict no";
+      box.textContent = "Too late. You need " + need + " seconds but only have " + t.toFixed(1) + ". Run away from the blast and save your gun.";
+    } else if (spare <= 2) {
+      box.className = "verdict tight";
+      box.textContent = "Just possible. You need " + need + " seconds and can't be interrupted. Start now.";
+    } else {
+      box.className = "verdict yes";
+      box.textContent = "Yes. You need " + need + " seconds, which leaves " + spare.toFixed(1) + " spare to deal with any attackers first.";
+    }
+  }
+  el("def-time").addEventListener("input", drawDefuse);
+  el("def-half").addEventListener("click", function () {
+    half = !half;
+    this.setAttribute("aria-pressed", String(half));
+    this.textContent = "Half defuse saved: " + (half ? "yes" : "no");
+    drawDefuse();
+  });
+  drawDefuse();
+
+  var modes = {
+    "The real game": [["Unrated", "5v5, first to 13 rounds, no rank at stake. 30 to 45 minutes."], ["Competitive", "The same rules, but your rank is on the line."], ["Premier", "Your fixed team of five plays scheduled league matches."]],
+    "A quick Spike game": [["Swiftplay", "Normal rules, first to 5 rounds. 15 to 20 minutes."], ["Spike Rush", "Everyone attacking has a Spike, random guns, first to 4 rounds. 10 to 15 minutes."], ["Retake", "3v3 with the Spike already planted, first to 5 rounds."]],
+    "Aim practice": [["Deathmatch", "Everyone for themselves, instant respawns, first to 40 kills or most kills in 9 minutes."], ["Team Deathmatch", "5v5 with instant respawns, up to a target kill count. About 10 minutes."]],
+    "Silly fun": [["Escalation", "Teams work through 12 weapons and abilities by getting kills. 7 to 9 minutes."], ["Spike Rush", "Random guns and power-up orbs keep things chaotic."]],
+    "Fights without a bomb": [["Knockout", "Round-based team fights where a kill revives a fallen teammate. First to 4 rounds."], ["Skirmish", "Short fights from 1v1 to 5v5 on small maps. First to 10 rounds."]]
+  };
+  var wrap = el("mode-buttons");
+  var results = el("mode-results");
+  function chooseMode(name, button) {
+    wrap.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === button)); });
+    results.textContent = "";
+    modes[name].forEach(function (m) {
+      var d = document.createElement("div"); d.className = "result";
+      var s = document.createElement("strong"); s.textContent = m[0];
+      d.appendChild(s); d.appendChild(document.createTextNode(m[1]));
+      results.appendChild(d);
+    });
+  }
+  Object.keys(modes).forEach(function (name, n) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = name; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () { chooseMode(name, b); });
+    wrap.appendChild(b);
+    if (n === 0) chooseMode(name, b);
+  });
+})();
+</script>
+</body>
+</html>

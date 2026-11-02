@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="45-second Spike countdown. With more than 7 seconds left a full defuse is possible; between 7 and 3.5 seconds only if half is already done; under 3.5 seconds it is too late">
+  <rect width="900" height="400" fill="#f6f4ee"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">Can you still defuse? It depends on the time left</text>
+
+  <rect x="60" y="90" width="659" height="70" fill="#bfe3c6" stroke="#55606b"/>
+  <rect x="719" y="90" width="60" height="70" fill="#f6d9a8" stroke="#55606b"/>
+  <rect x="779" y="90" width="61" height="70" fill="#efb1ac" stroke="#55606b"/>
+  <text x="389" y="120" text-anchor="middle" font-size="18" font-weight="700" fill="#1d4d27">Plenty of time for a full defuse</text>
+  <text x="389" y="143" text-anchor="middle" font-size="14" fill="#1d4d27">Clear the attackers first, then start</text>
+
+  <g font-size="15" font-weight="700" fill="#222" text-anchor="middle">
+    <text x="60" y="78">45 s left</text>
+    <text x="719" y="78">7 s</text>
+    <text x="785" y="78">3.5 s</text>
+    <text x="840" y="78">0</text>
+  </g>
+
+  <path d="M749 160V195H630" fill="none" stroke="#7d4f0d" stroke-width="2"/>
+  <text x="622" y="192" text-anchor="end" font-size="14" font-weight="700" fill="#7d4f0d">Only possible if half is already saved</text>
+  <path d="M809 160V225H630" fill="none" stroke="#a02a2f" stroke-width="2"/>
+  <text x="622" y="230" text-anchor="end" font-size="14" font-weight="700" fill="#a02a2f">Too late: run so you don't die in the blast</text>
+
+  <text x="60" y="275" font-size="17" font-weight="700" fill="#222">The defuse itself takes 7 seconds, with one save point</text>
+  <rect x="60" y="290" width="390" height="50" fill="#c9d6e8" stroke="#55606b"/>
+  <rect x="450" y="290" width="390" height="50" fill="#a9d7cf" stroke="#55606b"/>
+  <text x="255" y="320" text-anchor="middle" font-size="15" fill="#222">First 3.5 s: interrupted means start over</text>
+  <text x="645" y="320" text-anchor="middle" font-size="15" fill="#222">Last 3.5 s: interrupted means resume from half</text>
+  <line x1="450" y1="280" x2="450" y2="352" stroke="#0f7f73" stroke-width="4"/>
+  <text x="450" y="376" text-anchor="middle" font-size="15" font-weight="700" fill="#0f7f73">Half-defuse checkpoint</text>
+</svg>

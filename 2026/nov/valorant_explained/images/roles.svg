@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 310" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="The four roles: Duelist goes in first, Initiator finds enemies, Controller blocks vision, Sentinel guards the area">
+  <rect width="900" height="310" fill="#f6f4ee"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">The four jobs on a team</text>
+
+  <g stroke="#55606b" stroke-width="2">
+    <rect x="25" y="55" width="200" height="235" rx="12" fill="#fbe3e1"/>
+    <rect x="245" y="55" width="200" height="235" rx="12" fill="#fdf0d5"/>
+    <rect x="465" y="55" width="200" height="235" rx="12" fill="#e4e0f3"/>
+    <rect x="685" y="55" width="200" height="235" rx="12" fill="#d5eee9"/>
+  </g>
+
+  <!-- Duelist: lightning bolt -->
+  <path d="M135 72L95 135H122L108 180L156 112H127Z" fill="#c8323a"/>
+  <!-- Initiator: magnifying glass -->
+  <circle cx="338" cy="115" r="30" fill="#fff" stroke="#b9791b" stroke-width="8"/>
+  <line x1="360" y1="137" x2="388" y2="168" stroke="#b9791b" stroke-width="10" stroke-linecap="round"/>
+  <!-- Controller: smoke cloud -->
+  <g fill="#6b3fa0"><circle cx="535" cy="130" r="26"/><circle cx="568" cy="108" r="32"/><circle cx="600" cy="130" r="26"/><rect x="535" y="125" width="65" height="31"/></g>
+  <!-- Sentinel: shield -->
+  <path d="M785 72L835 90V125C835 155 812 172 785 182C758 172 735 155 735 125V90Z" fill="#0f7f73"/>
+  <path d="M762 125L780 143L810 108" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g text-anchor="middle" fill="#222">
+    <text x="125" y="214" font-size="20" font-weight="700">Duelist</text>
+    <text x="125" y="240" font-size="15">Goes in first</text>
+    <text x="125" y="261" font-size="15">and wins fights</text>
+
+    <text x="345" y="214" font-size="20" font-weight="700">Initiator</text>
+    <text x="345" y="240" font-size="15">Finds enemies and</text>
+    <text x="345" y="261" font-size="15">sets up the entry</text>
+
+    <text x="565" y="214" font-size="20" font-weight="700">Controller</text>
+    <text x="565" y="240" font-size="15">Blocks vision with</text>
+    <text x="565" y="261" font-size="15">smokes and walls</text>
+
+    <text x="785" y="214" font-size="20" font-weight="700">Sentinel</text>
+    <text x="785" y="240" font-size="15">Guards areas and</text>
+    <text x="785" y="261" font-size="15">watches your back</text>
+  </g>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 370" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="Worked example. Round 1: start 800, buy Ghost, win with two kills, finish with 3700. Round 2: buy Phantom and light shields, lose with one kill, finish with 2500. Round 3: buy Bulldog and light shields, leaving 50">
+  <defs>
+    <marker id="w" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#222"/></marker>
+  </defs>
+  <rect width="900" height="370" fill="#f6f4ee"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">One defender's wallet over three rounds</text>
+
+  <g fill="#fff" stroke="#55606b" stroke-width="2">
+    <rect x="25" y="55" width="250" height="285" rx="12"/>
+    <rect x="325" y="55" width="250" height="285" rx="12"/>
+    <rect x="625" y="55" width="250" height="285" rx="12"/>
+  </g>
+  <path d="M278 197H321" stroke="#222" stroke-width="3" marker-end="url(#w)"/>
+  <path d="M578 197H621" stroke="#222" stroke-width="3" marker-end="url(#w)"/>
+
+  <g font-size="15" fill="#222">
+    <text x="45" y="88" font-size="19" font-weight="700">Round 1: pistols</text>
+    <text x="45" y="124">Start with</text><text x="255" y="124" text-anchor="end">800</text>
+    <text x="45" y="150">Buy a Ghost</text><text x="255" y="150" text-anchor="end" fill="#c8323a">-500</text>
+    <text x="45" y="176">Left in wallet</text><text x="255" y="176" text-anchor="end">300</text>
+    <text x="45" y="214" font-weight="700" fill="#0f7f73">Team wins, 2 kills</text>
+    <text x="45" y="240">Win bonus</text><text x="255" y="240" text-anchor="end" fill="#0f7f73">+3,000</text>
+    <text x="45" y="266">2 kills x 200</text><text x="255" y="266" text-anchor="end" fill="#0f7f73">+400</text>
+    <line x1="45" y1="282" x2="255" y2="282" stroke="#55606b"/>
+    <text x="45" y="312" font-weight="700">Next round</text><text x="255" y="312" text-anchor="end" font-weight="700">3,700</text>
+
+    <text x="345" y="88" font-size="19" font-weight="700">Round 2: rifle</text>
+    <text x="345" y="124">Phantom</text><text x="555" y="124" text-anchor="end" fill="#c8323a">-2,900</text>
+    <text x="345" y="150">Light Shields</text><text x="555" y="150" text-anchor="end" fill="#c8323a">-400</text>
+    <text x="345" y="176">Left in wallet</text><text x="555" y="176" text-anchor="end">400</text>
+    <text x="345" y="214" font-weight="700" fill="#c8323a">Team loses, 1 kill</text>
+    <text x="345" y="240">Loss bonus</text><text x="555" y="240" text-anchor="end" fill="#0f7f73">+1,900</text>
+    <text x="345" y="266">1 kill x 200</text><text x="555" y="266" text-anchor="end" fill="#0f7f73">+200</text>
+    <line x1="345" y1="282" x2="555" y2="282" stroke="#55606b"/>
+    <text x="345" y="312" font-weight="700">Next round</text><text x="555" y="312" text-anchor="end" font-weight="700">2,500</text>
+
+    <text x="645" y="88" font-size="19" font-weight="700">Round 3: half buy</text>
+    <text x="645" y="124">Start with</text><text x="855" y="124" text-anchor="end">2,500</text>
+    <text x="645" y="150">Bulldog</text><text x="855" y="150" text-anchor="end" fill="#c8323a">-2,050</text>
+    <text x="645" y="176">Light Shields</text><text x="855" y="176" text-anchor="end" fill="#c8323a">-400</text>
+    <line x1="645" y1="192" x2="855" y2="192" stroke="#55606b"/>
+    <text x="645" y="222" font-weight="700">Left in wallet</text><text x="855" y="222" text-anchor="end" font-weight="700">50</text>
+    <text x="645" y="262">No Phantom this time:</text>
+    <text x="645" y="286">with armor it would cost</text>
+    <text x="645" y="310">3,300.</text>
+  </g>
+</svg>
